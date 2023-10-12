@@ -71,9 +71,13 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
 
   const sortedItems = useMemo(() => {
     return [...items].sort((a: IUserResponse, b: IUserResponse) => {
-      const first = a[sortDescriptor.column as keyof IUserResponse] as number;
-      const second = b[sortDescriptor.column as keyof IUserResponse] as number;
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
+      const first = String(
+        a[sortDescriptor.column as keyof IUserResponse]
+      ).toLowerCase();
+      const second = String(
+        b[sortDescriptor.column as keyof IUserResponse]
+      ).toLowerCase();
+      const cmp = first.localeCompare(second, "en", { sensitivity: "base" });
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
@@ -141,14 +145,7 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-    visibleColumns,
-    onSearchChange,
-    onRowsPerPageChange,
-    users.length,
-    hasSearchFilter,
-  ]);
+  }, [filterValue, onSearchChange, onRowsPerPageChange]);
 
   const bottomContent = useMemo(() => {
     return (
