@@ -1,6 +1,6 @@
-import TableComponent from "@/components/table/table";
 import { getUsers } from "@/services/api-url";
 import { IResponseApi } from "@/types/response-api";
+import { TableComponent } from "@/components/table/table";
 
 export default async function Home() {
   let users: IResponseApi = await getUsers();
