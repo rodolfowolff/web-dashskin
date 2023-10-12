@@ -1,0 +1,34 @@
+{
+  "routes": [
+    {
+      "key": "home",
+      "title": "Inicio",
+      "defaultOpen": true,
+      "keywords": "home, dashboard",
+      "path": "/"
+    },
+    {
+      "key": "users",
+      "title": "Usuarios",
+      "defaultOpen": false,
+      "keywords": "users",
+      "path": "/users"
+    }
+  ],
+  "mobileRoutes": [
+    {
+      "key": "home",
+      "title": "Inicio",
+      "defaultOpen": true,
+      "keywords": "home, dashboard",
+      "path": "/"
+    },
+    {
+      "key": "users",
+      "title": "Usuarios",
+      "defaultOpen": false,
+      "keywords": "users",
+      "path": "/users"
+    }
+  ]
+}
