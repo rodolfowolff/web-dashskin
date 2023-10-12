@@ -35,7 +35,10 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          <div className="relative flex flex-col" id="app-container">
+          <div
+            className="relative flex flex-col justify-between h-screen"
+            id="app-container"
+          >
             <NavbarComponent
               mobileRoutes={router.mobileRoutes}
               routes={router.routes}
