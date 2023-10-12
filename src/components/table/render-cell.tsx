@@ -1,7 +1,7 @@
 "use client";
 
 import { Key } from "react";
-import { User, Tooltip, Chip } from "@nextui-org/react";
+import { User, Tooltip } from "@nextui-org/react";
 import { IUserResponse } from "@/types/response-api";
 import { DeleteIcon, EditIcon, EyeIcon } from "../icons";
 

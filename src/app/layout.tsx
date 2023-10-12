@@ -26,17 +26,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning dir="ltr" lang="en">
+    <html lang="en">
       <head />
       <body
+        suppressHydrationWarning={true}
         className={clsx(
-          "min-h-screen bg-slate-50 font-sans antialiased",
+          "min-h-screen bg-stone-50 font-sans antialiased",
           fontSans.variable
         )}
       >
         <Providers>
           <div
-            className="relative flex flex-col justify-between h-screen"
+            className="relative flex flex-col justify-between min-h-screen"
             id="app-container"
           >
             <NavbarComponent
