@@ -1,16 +1,11 @@
-// "use client";
-
-import React from "react";
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Selection,
 } from "@nextui-org/react";
 
-// const INITIAL_VISIBLE_COLUMNS = ["username", "email", "age", "actions"];
 import { columnsTable } from "@/components/table/table";
 import { ChevronDownIcon } from "../icons";
 import { capitalize } from "@/utils/capitalize";

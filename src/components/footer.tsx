@@ -13,8 +13,8 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="container mx-auto max-w-7xl pb-10 px-12 bottom-0">
-      <div className="flex flex-col justify-center items-center gap-1">
+    <footer className="container mx-auto max-w-7xl pb-10 px-12 bottom-0 h-28 mt-4 bg-slate-50">
+      <div className="flex flex-col justify-center items-center gap-1 pt-6">
         <p className="text-sm text-default-400">
           Criado&nbsp;por&nbsp;
           <Link
