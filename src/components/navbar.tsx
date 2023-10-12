@@ -38,25 +38,17 @@ export default function NavbarComponent({
           <Image src="/next.svg" alt="Logo" width={96} height={96} />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
-
-        {routes.map((route: IRoutes) => (
-          <NavbarItem key={route.key} isActive={route.defaultOpen}>
-            <Link href={route.path} aria-current="page" color="foreground">
-              {route.title}
-            </Link>
-          </NavbarItem>
-        ))}
       </NavbarContent>
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden sm:flex">
           <Link href="#" color="foreground">
-            Login
+            Cadastro
           </Link>
         </NavbarItem>
         <NavbarItem className="hidden sm:flex">
           <Button as={Link} color="default" href="#" variant="flat">
-            Sair
+            Login
           </Button>
         </NavbarItem>
       </NavbarContent>
