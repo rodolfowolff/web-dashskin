@@ -7,8 +7,10 @@ export async function getUsers() {
     },
     cache: 'force-cache'
   });
+
   if (!res.ok) {
     throw new Error(res.statusText);
   }
+
   return await res.json();
 };

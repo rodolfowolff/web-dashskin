@@ -1,34 +1,26 @@
 "use client";
 
-import React from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import {
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
   TableRow,
   TableCell,
   Input,
   Button,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  User,
   Pagination,
   Selection,
   SortDescriptor,
+  TableHeader,
+  TableColumn,
 } from "@nextui-org/react";
-import {
-  PlusIcon,
-  VerticalDotsIcon,
-  ChevronDownIcon,
-  SearchIcon,
-} from "@/components/icons";
-import { capitalize } from "@/utils/capitalize";
+import { PlusIcon, SearchIcon } from "@/components/icons";
 import { IUserResponse } from "@/types/response-api";
+import { RenderCell } from "./render-cell";
+import { useVisibleColumns } from "@/context/visibleColumnsContext";
+import { HeaderTableFilterComponent } from "./header-table-filter";
 
-const columns = [
+export const columnsTable = [
   { name: "ID", uid: "_id", sortable: true },
   { name: "NOME", uid: "username", sortable: true },
   { name: "IDADE", uid: "age", sortable: true },
@@ -36,39 +28,29 @@ const columns = [
   { name: "AÇÕES", uid: "actions" },
 ];
 
-const INITIAL_VISIBLE_COLUMNS = ["username", "email", "age", "actions"];
+export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
+  const [filterValue, setFilterValue] = useState("");
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
+  const { visibleColumns } = useVisibleColumns();
 
-// type User = (typeof users)[0];
-
-export default function TableComponent({ users }: { users: IUserResponse[] }) {
-  const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
-    new Set([])
-  );
-  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
-    new Set(INITIAL_VISIBLE_COLUMNS)
-  );
-  // const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "username",
     direction: "ascending",
   });
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
 
   const pages = Math.ceil(users.length / rowsPerPage);
 
   const hasSearchFilter = Boolean(filterValue);
 
-  const headerColumns = React.useMemo(() => {
-    if (visibleColumns === "all") return columns;
-
-    return columns.filter((column) =>
+  const headerColumns = useMemo(() => {
+    return columnsTable.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
-  const filteredItems = React.useMemo(() => {
+  const filteredItems = useMemo(() => {
     let filteredUsers = [...users];
 
     if (hasSearchFilter) {
@@ -80,14 +62,14 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
     return filteredUsers;
   }, [users, hasSearchFilter, filterValue]);
 
-  const items = React.useMemo(() => {
+  const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return filteredItems.slice(start, end);
   }, [page, filteredItems, rowsPerPage]);
 
-  const sortedItems = React.useMemo(() => {
+  const sortedItems = useMemo(() => {
     return [...items].sort((a: IUserResponse, b: IUserResponse) => {
       const first = a[sortDescriptor.column as keyof IUserResponse] as number;
       const second = b[sortDescriptor.column as keyof IUserResponse] as number;
@@ -97,73 +79,15 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback(
-    (user: IUserResponse, columnKey: React.Key) => {
-      const cellValue = user[columnKey as keyof IUserResponse];
-
-      switch (columnKey) {
-        case "username":
-          return (
-            <User
-              avatarProps={{ radius: "full", size: "sm", src: user.avatar }}
-              classNames={{
-                description: "text-default-500",
-              }}
-              description={user.username}
-              name={cellValue}
-            >
-              {user.username}
-            </User>
-          );
-        case "age":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-tiny capitalize text-default-500">
-                {user.age}
-              </p>
-            </div>
-          );
-        case "email":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-tiny capitalize text-default-500">
-                {user.email}
-              </p>
-            </div>
-          );
-        case "actions":
-          return (
-            <div className="relative flex justify-end items-center gap-2">
-              <Dropdown className="bg-background border-1 border-default-200">
-                <DropdownTrigger>
-                  <Button isIconOnly radius="full" size="sm" variant="ghost">
-                    <VerticalDotsIcon className="text-default-400" />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu>
-                  <DropdownItem>Ver</DropdownItem>
-                  <DropdownItem>Editar</DropdownItem>
-                  <DropdownItem>Deletar</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          );
-        default:
-          return cellValue;
-      }
-    },
-    []
-  );
-
-  const onRowsPerPageChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const onRowsPerPageChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
       setRowsPerPage(Number(e.target.value));
       setPage(1);
     },
     []
   );
 
-  const onSearchChange = React.useCallback((value?: string) => {
+  const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -172,7 +96,7 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
     }
   }, []);
 
-  const topContent = React.useMemo(() => {
+  const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
@@ -191,31 +115,8 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  size="sm"
-                  variant="flat"
-                >
-                  Colunas da tabela
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Colunas da tabela"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
+            <HeaderTableFilterComponent />
+
             <Button
               className="bg-foreground text-background"
               endContent={<PlusIcon />}
@@ -249,7 +150,7 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
     hasSearchFilter,
   ]);
 
-  const bottomContent = React.useMemo(() => {
+  const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
         <span className="text-xs text-default-400 w-48">
@@ -276,9 +177,9 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
         </span>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [selectedKeys, items.length, hasSearchFilter, page, pages, users.length]);
 
-  const classNames = React.useMemo(
+  const classNames = useMemo(
     () => ({
       wrapper: ["max-h-[382px]", "max-w-3xl"],
       th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
@@ -329,15 +230,18 @@ export default function TableComponent({ users }: { users: IUserResponse[] }) {
           </TableColumn>
         )}
       </TableHeader>
+
       <TableBody emptyContent={"Nenhum usuário encontrado"} items={sortedItems}>
         {(item) => (
           <TableRow key={item._id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell>
+                {RenderCell({ user: item, columnKey: columnKey })}
+              </TableCell>
             )}
           </TableRow>
         )}
       </TableBody>
     </Table>
   );
-}
+};
