@@ -1,37 +1,15 @@
 "use client";
 
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Input,
-  Button,
-  Pagination,
-  Selection,
-  SortDescriptor,
-  TableHeader,
-  TableColumn,
-} from "@nextui-org/react";
+import Image from "next/image";
+import { Input, Button, Pagination, SortDescriptor } from "@nextui-org/react";
 import { PlusIcon, SearchIcon } from "@/components/icons";
 import { IUserResponse } from "@/types/response-api";
-import { RenderCell } from "./render-cell";
-import { useVisibleColumns } from "@/context/visibleColumnsContext";
-import { HeaderTableFilterComponent } from "./header-table-filter";
-
-export const columnsTable = [
-  { name: "ID", uid: "_id", sortable: true },
-  { name: "NOME", uid: "username", sortable: true },
-  { name: "IDADE", uid: "age", sortable: true },
-  { name: "EMAIL", uid: "email" },
-  { name: "AÇÕES", uid: "actions" },
-];
+import { HeaderTable } from "./header-table";
+import { ActionsTableComponent } from "./actions-table";
 
 export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
   const [filterValue, setFilterValue] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const { visibleColumns } = useVisibleColumns();
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -43,12 +21,6 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
   const pages = Math.ceil(users.length / rowsPerPage);
 
   const hasSearchFilter = Boolean(filterValue);
-
-  const headerColumns = useMemo(() => {
-    return columnsTable.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
-    );
-  }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
     let filteredUsers = [...users];
@@ -100,37 +72,31 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
     }
   }, []);
 
-  const topContent = useMemo(() => {
+  const bottomPaginate = useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
-          <Input
-            isClearable
-            classNames={{
-              base: "w-full sm:max-w-[44%]",
-              inputWrapper: "border-1",
-            }}
-            placeholder="Pesquisar por nome..."
-            size="sm"
-            startContent={<SearchIcon className="text-default-300" />}
-            value={filterValue}
-            variant="bordered"
-            onClear={() => setFilterValue("")}
-            onValueChange={onSearchChange}
-          />
-          <div className="flex gap-3">
-            <HeaderTableFilterComponent />
+      <div className="py-2 px-2 grid grid-cols-2">
+        <span className="text-default-400 text-xs col-start-1">
+          Total {users.length} usuários
+        </span>
 
-            <Button
-              className="bg-foreground text-background"
-              endContent={<PlusIcon />}
-              size="sm"
-            >
-              Adicionar usuário
-            </Button>
-          </div>
+        <div className="col-start-2">
+          <Pagination
+            showControls
+            classNames={{
+              cursor:
+                "bg-[#1e1e1e] text-blue-600 hover:bg-blue-600 border border-blue-600 hover:text-white cursor-pointer",
+              item: "text-default-600",
+            }}
+            // color="primary"
+            isDisabled={hasSearchFilter}
+            page={page}
+            total={pages}
+            variant="light"
+            onChange={setPage}
+          />
         </div>
-        <div className="flex justify-end items-center">
+
+        <div className="col-start-3">
           <label className="flex items-center text-default-400 text-xs">
             Linhas por página
             <select
@@ -145,100 +111,86 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
         </div>
       </div>
     );
-  }, [filterValue, onSearchChange, onRowsPerPageChange]);
-
-  const bottomContent = useMemo(() => {
-    return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        <span className="text-xs text-default-400 w-48">
-          {selectedKeys === "all"
-            ? "Todos os usuários selecionados"
-            : `${selectedKeys.size} de ${items.length} usuários selecionados`}
-        </span>
-
-        <Pagination
-          showControls
-          classNames={{
-            cursor: "bg-foreground text-background",
-          }}
-          color="default"
-          isDisabled={hasSearchFilter}
-          page={page}
-          total={pages}
-          variant="light"
-          onChange={setPage}
-        />
-
-        <span className="text-default-400 text-xs">
-          Total {users.length} usuários
-        </span>
-      </div>
-    );
-  }, [selectedKeys, items.length, hasSearchFilter, page, pages, users.length]);
-
-  const classNames = useMemo(
-    () => ({
-      wrapper: ["max-h-[382px]", "max-w-3xl"],
-      th: ["bg-transparent", "text-default-500", "border-b", "border-divider"],
-      td: [
-        // changing the rows border radius
-        // first
-        "group-data-[first=true]:first:before:rounded-none",
-        "group-data-[first=true]:last:before:rounded-none",
-        // middle
-        "group-data-[middle=true]:before:rounded-none",
-        // last
-        "group-data-[last=true]:first:before:rounded-none",
-        "group-data-[last=true]:last:before:rounded-none",
-      ],
-    }),
-    []
-  );
+  }, [hasSearchFilter, onRowsPerPageChange, page, pages, users.length]);
 
   return (
-    <Table
-      isCompact
-      removeWrapper
-      aria-label="Example table with custom cells, pagination and sorting"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      checkboxesProps={{
-        classNames: {
-          wrapper: "after:bg-foreground after:text-background text-background",
-        },
-      }}
-      classNames={classNames}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="mt-4 flex flex-wrap w-full gap-2 items-center md:justify-between">
+        <div className="flex w-full sm:w-[34rem] bg-zinc-800 h-8 rounded-lg">
+          <Input
+            isClearable
+            classNames={{
+              inputWrapper: "border-1 border-gray-700",
+              input: "text-default-200",
+            }}
+            placeholder="Pesquisar usuario por nome..."
+            size="sm"
+            startContent={<SearchIcon className="text-default-300" />}
+            value={filterValue}
+            onClear={() => setFilterValue("")}
+            onValueChange={onSearchChange}
+            variant="bordered"
+            color="primary"
+          />
+        </div>
+        <div className="flex justify-end w-full sm:w-40">
+          <Button
+            className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
+            endContent={<PlusIcon />}
+            size="sm"
           >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
+            Adicionar usuário
+          </Button>
+        </div>
+      </div>
 
-      <TableBody emptyContent={"Nenhum usuário encontrado"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item._id}>
-            {(columnKey) => (
-              <TableCell>
-                {RenderCell({ user: item, columnKey: columnKey })}
-              </TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+      <div className="mt-2 flow-root">
+        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table className="min-w-full">
+              <HeaderTable />
+
+              <tbody className="divide-y divide-foreground-800 bg-[#121212]">
+                {sortedItems.map((user) => (
+                  <tr key={user._id}>
+                    <td className="whitespace-nowrap text-sm font-medium text-foreground-50 pl-4">
+                      <div className="flex items-center">
+                        <div className="h-11 w-11 flex-shrink-0">
+                          <Image
+                            className="h-11 w-11 rounded-full"
+                            src={user.avatar}
+                            alt={user.username + " avatar"}
+                            width={70}
+                            height={70}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="font-medium text-default-200">
+                            {user.username}
+                          </div>
+                          <div className="mt-1 text-foreground-50 text-xs font-light">
+                            {user.email}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
+                      {user.email}
+                    </td>
+                    <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
+                      {user.age}
+                    </td>
+
+                    <ActionsTableComponent user={user} />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {bottomPaginate}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
