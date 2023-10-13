@@ -7,10 +7,12 @@ import { PlusIcon, SearchIcon } from "@/components/icons";
 import { IUserResponse } from "@/types/response-api";
 import { HeaderTable } from "./header-table";
 import { ActionsTableComponent } from "./actions-table";
+import { useVisibleModal } from "@/context/modalContext";
+import ModalComponent from "../modal/modal";
 
 export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
+  const { visibleModal, setVisibleModal } = useVisibleModal();
   const [filterValue, setFilterValue] = useState("");
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "username",
@@ -138,6 +140,7 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
             className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
             endContent={<PlusIcon />}
             size="sm"
+            onClick={() => setVisibleModal(!visibleModal)}
           >
             Adicionar usuário
           </Button>
@@ -191,6 +194,8 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
           </div>
         </div>
       </div>
+
+      <ModalComponent />
     </div>
   );
 };
