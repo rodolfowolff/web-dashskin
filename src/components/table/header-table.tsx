@@ -3,8 +3,8 @@
 export const HeaderTable = () => {
   const columnsTable = [
     { name: "NOME", uid: "username", sortable: true },
-    { name: "IDADE", uid: "age", sortable: true },
     { name: "EMAIL", uid: "email" },
+    { name: "IDADE", uid: "age", sortable: true },
     { name: "AÇÕES", uid: "actions" },
   ];
 
