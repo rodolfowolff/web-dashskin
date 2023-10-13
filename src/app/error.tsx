@@ -17,12 +17,15 @@ export default function Error({
 
   return (
     <div className="text-center w-full">
-      <h2 className="text-2xl">Ocorreu um erro ao tentar carregar os dados.</h2>
+      <h2 className="text-2xl text-default-200">
+        Ocorreu um erro ao tentar carregar os dados.
+      </h2>
       <Button
-        color="default"
+        color="primary"
+        size="lg"
         href="#"
         variant="flat"
-        className="mt-4"
+        className="mt-4 hover:bg-blue-600 hover:text-default-100"
         onClick={() => reset()}
       >
         Tentar novamente
