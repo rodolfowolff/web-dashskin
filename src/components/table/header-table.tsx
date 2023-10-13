@@ -24,9 +24,10 @@ export const HeaderTable = () => {
             >
               <a href="#" className="group inline-flex">
                 {item.name}
-                <span className="invisible ml-2 flex-none rounded text-foreground-50 group-hover:visible group-focus:visible">
+                {/* TODO: Desativado: nao implementado */}
+                {/* <span className="invisible ml-2 flex-none rounded text-foreground-50 group-hover:visible group-focus:visible">
                   <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-                </span>
+                </span> */}
               </a>
             </th>
           )
