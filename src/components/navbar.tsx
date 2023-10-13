@@ -30,17 +30,34 @@ export default function NavbarComponent({
   });
 
   return (
-    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
+    <Navbar
+      isBordered
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+      className="bg-dark"
+    >
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
-          <Image src="/next.svg" alt="Logo" width={96} height={96} />
+          <Image
+            src="/next.svg"
+            alt="Logo"
+            width={96}
+            height={96}
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+          />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <Image src="/next.svg" alt="Logo" width={96} height={96} />
+          <Image
+            src="/next.svg"
+            alt="Logo"
+            width={96}
+            height={96}
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+          />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
       </NavbarContent>
@@ -49,15 +66,18 @@ export default function NavbarComponent({
         <NavbarItem className="hidden sm:flex gap-2">
           {userAuth && userAuth.username && (
             <>
-              <Link href="#" color="foreground" size="sm">
+              <Link
+                href="#"
+                size="sm"
+                className="text-default-100 py-1 px-4 rounded"
+              >
                 Dashboard
               </Link>
 
               <Link
                 href="#"
-                color="foreground"
                 size="sm"
-                className="text-default-800 bg-slate-200 py-2 px-4 rounded"
+                className="text-default-100 py-1 px-4 rounded"
               >
                 Sair
               </Link>
@@ -73,27 +93,17 @@ export default function NavbarComponent({
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden text-danger-800" justify="end">
+      <NavbarContent className="sm:hidden text-default-200" justify="end">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         />
       </NavbarContent>
 
-      <NavbarMenu>
+      {/* Mobile */}
+      <NavbarMenu className="bg-[#111111]">
         {mobileRoutes.map((route: IRoutes) => (
           <NavbarMenuItem key={route.key}>
-            <Link
-              className="w-full"
-              color={
-                route.defaultOpen
-                  ? "warning"
-                  : route === mobileRoutes.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
+            <Link className="w-full" color="primary" href="#" size="lg">
               {route.title}
             </Link>
           </NavbarMenuItem>
