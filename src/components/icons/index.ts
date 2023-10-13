@@ -5,3 +5,4 @@ export * from './SearchIcon';
 export * from './DeleteIcon';
 export * from './EyeIcon';
 export * from './EditIcon';
+export * from './MailIcon';
