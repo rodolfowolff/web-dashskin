@@ -60,24 +60,19 @@ export default function ModalComponent() {
     }
 
     try {
-      const newUser = await submitCreateUser({
+      await submitCreateUser({
         username: userName,
         email: userEmail,
         age: +userAge,
         avatar: userAvatar,
       });
-      console.log({ newUser });
     } catch (error) {
       if (error instanceof Error) {
         console.error(error);
       }
       return;
     } finally {
-      setVisibleModal(false);
-      setUserName("");
-      setUserEmail("");
-      setUserAge("");
-      setUserAvatar("");
+      onCloseModal();
     }
   };
 
