@@ -6,21 +6,23 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
-  Checkbox,
   Input,
-  Link,
 } from "@nextui-org/react";
-import { MailIcon } from "../icons";
 import { useVisibleModal } from "@/context/modalContext";
-import { validateAge, validateEmail, validateName } from "@/utils/validations";
+import {
+  validateAge,
+  validateAvatar,
+  validateEmail,
+  validateName,
+} from "@/utils/validations";
+import submitCreateUser from "@/app/actions";
 
 export default function ModalComponent() {
   const { visibleModal, setVisibleModal } = useVisibleModal();
-  // const { onOpenChange } = useDisclosure();
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userAge, setUserAge] = useState("");
+  const [userAvatar, setUserAvatar] = useState("");
 
   const isInvalidName = useMemo(() => {
     if (userName === "") return false;
@@ -37,15 +39,46 @@ export default function ModalComponent() {
     return validateAge(+userAge) ? false : true;
   }, [userAge]);
 
-  const isInvalidForm = useMemo(() => {
-    return isInvalidName || isInvalidEmail || isInvalidAge;
-  });
+  const isValidAvatar = useMemo(() => {
+    if (userAvatar === "") return false;
+    return validateAvatar(userAvatar) ? false : true;
+  }, [userAvatar]);
 
   const onCloseModal = () => {
     setVisibleModal(false);
     setUserName("");
     setUserEmail("");
     setUserAge("");
+    setUserAvatar("");
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isInvalidName || isInvalidEmail || isInvalidAge) {
+      return;
+    }
+
+    try {
+      const newUser = await submitCreateUser({
+        username: userName,
+        email: userEmail,
+        age: +userAge,
+        avatar: userAvatar,
+      });
+      console.log({ newUser });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error);
+      }
+      return;
+    } finally {
+      setVisibleModal(false);
+      setUserName("");
+      setUserEmail("");
+      setUserAge("");
+      setUserAvatar("");
+    }
   };
 
   return (
@@ -70,94 +103,124 @@ export default function ModalComponent() {
                 Cadastrar
               </ModalHeader>
 
-              <ModalBody>
-                <Input
-                  isClearable
-                  value={userName}
-                  type="text"
-                  label="Nome"
-                  variant="bordered"
-                  placeholder="Digite o nome"
-                  isInvalid={isInvalidName}
-                  color={
-                    userName === ""
-                      ? "primary"
-                      : isInvalidName
-                      ? "danger"
-                      : "success"
-                  }
-                  errorMessage={isInvalidName && "Insira um nome válido"}
-                  onClear={() => setUserName("")}
-                  onValueChange={setUserName}
-                  className="w-full"
-                  labelPlacement="outside"
-                />
+              <form method="POST" action="#" onSubmit={onSubmit}>
+                <ModalBody>
+                  <Input
+                    isClearable
+                    value={userName}
+                    type="text"
+                    label="Nome"
+                    variant="bordered"
+                    placeholder="Digite o nome"
+                    isInvalid={isInvalidName}
+                    color={
+                      userName === ""
+                        ? "primary"
+                        : isInvalidName
+                        ? "danger"
+                        : "success"
+                    }
+                    errorMessage={isInvalidName && "Insira um nome válido"}
+                    onClear={() => setUserName("")}
+                    onValueChange={setUserName}
+                    className="w-full"
+                    labelPlacement="outside"
+                  />
 
-                <Input
-                  isClearable
-                  value={userEmail}
-                  type="email"
-                  label="Email"
-                  variant="bordered"
-                  placeholder="Digite o email"
-                  isInvalid={isInvalidEmail}
-                  color={
-                    userEmail === ""
-                      ? "primary"
-                      : isInvalidEmail
-                      ? "danger"
-                      : "success"
-                  }
-                  errorMessage={
-                    isInvalidEmail && "Insira um email válido (Ex: abc@abc.com)"
-                  }
-                  onClear={() => setUserEmail("")}
-                  onValueChange={setUserEmail}
-                  className="w-full"
-                  labelPlacement="outside"
-                />
+                  <Input
+                    isClearable
+                    value={userEmail}
+                    type="email"
+                    label="Email"
+                    variant="bordered"
+                    placeholder="Digite o email"
+                    isInvalid={isInvalidEmail}
+                    color={
+                      userEmail === ""
+                        ? "primary"
+                        : isInvalidEmail
+                        ? "danger"
+                        : "success"
+                    }
+                    errorMessage={
+                      isInvalidEmail &&
+                      "Insira um email válido (Ex: abc@abc.com)"
+                    }
+                    onClear={() => setUserEmail("")}
+                    onValueChange={setUserEmail}
+                    className="w-full"
+                    labelPlacement="outside"
+                  />
 
-                <Input
-                  isClearable
-                  value={userAge}
-                  type="string"
-                  label="Idade"
-                  variant="bordered"
-                  placeholder="Digite a idade"
-                  isInvalid={isInvalidAge}
-                  color={
-                    userAge === ""
-                      ? "primary"
-                      : isInvalidEmail
-                      ? "danger"
-                      : "success"
-                  }
-                  errorMessage={
-                    isInvalidAge && "Insira uma idade válida (1-100)"
-                  }
-                  onClear={() => setUserAge("")}
-                  onValueChange={setUserAge}
-                  className="w-full text-xs"
-                  labelPlacement="outside"
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  className="bg-red-700/40 text-default-100 border-1 border-transparent hover:bg-red-600 hover:border-1 hover:border-red-100"
-                  variant="flat"
-                  onPress={onCloseModal}
-                  size="sm"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
-                  onPress={onClose}
-                  size="sm"
-                >
-                  Cadastrar
-                </Button>
-              </ModalFooter>
+                  <Input
+                    isClearable
+                    value={userAge}
+                    type="string"
+                    label="Idade"
+                    variant="bordered"
+                    placeholder="Digite a idade"
+                    isInvalid={isInvalidAge}
+                    color={
+                      userAge === ""
+                        ? "primary"
+                        : isInvalidEmail
+                        ? "danger"
+                        : "success"
+                    }
+                    errorMessage={
+                      isInvalidAge && "Insira uma idade válida (1-100)"
+                    }
+                    onClear={() => setUserAge("")}
+                    onValueChange={setUserAge}
+                    className="w-full text-xs"
+                    labelPlacement="outside"
+                  />
+
+                  <Input
+                    isClearable
+                    value={userAvatar}
+                    type="string"
+                    label="Avatar"
+                    variant="bordered"
+                    placeholder="Digite a url da imagem"
+                    isInvalid={isValidAvatar}
+                    color={
+                      userAvatar === ""
+                        ? "primary"
+                        : isValidAvatar
+                        ? "danger"
+                        : "success"
+                    }
+                    errorMessage={
+                      isValidAvatar &&
+                      "Insira uma url válida (Ex: https://images.com)"
+                    }
+                    onClear={() => setUserAvatar("")}
+                    onValueChange={setUserAvatar}
+                    className="w-full text-xs"
+                    labelPlacement="outside"
+                  />
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button
+                    className="bg-red-700/40 text-default-100 border-1 border-transparent hover:bg-red-600 hover:border-1 hover:border-red-100"
+                    variant="flat"
+                    onPress={onCloseModal}
+                    size="sm"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
+                    onPress={onClose}
+                    size="sm"
+                    type="submit"
+                  >
+                    Cadastrar
+                  </Button>
+                </ModalFooter>
+              </form>
             </>
           )}
         </ModalContent>
