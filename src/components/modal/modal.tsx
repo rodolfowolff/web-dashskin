@@ -80,8 +80,9 @@ export default function ModalComponent() {
     <>
       <Modal
         isOpen={visibleModal}
+        onClose={onCloseModal}
         // onOpenChange={onOpenChange}
-        placement="top-center"
+        placement="auto"
         classNames={{
           body: "py-6",
           backdrop: "bg-[#111111]/90 backdrop-opacity-90",
@@ -199,15 +200,16 @@ export default function ModalComponent() {
 
                 <ModalFooter>
                   <Button
-                    className="bg-red-700/40 text-default-100 border-1 border-transparent hover:bg-red-600 hover:border-1 hover:border-red-100"
-                    variant="flat"
+                    variant="bordered"
+                    color="danger"
                     onPress={onCloseModal}
                     size="sm"
+                    type="button"
                   >
                     Cancelar
                   </Button>
                   <Button
-                    className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
+                    className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100 disabled:opacity-10"
                     onPress={onClose}
                     size="sm"
                     type="submit"
