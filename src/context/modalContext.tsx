@@ -12,6 +12,8 @@ type ModalContextType = {
   setUserInfo: React.Dispatch<React.SetStateAction<IUserResponse>>;
   isDeleted: boolean;
   setIsDeleted: React.Dispatch<React.SetStateAction<boolean>>;
+  isViewing: boolean;
+  setIsViewing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -29,6 +31,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({} as IUserResponse);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
 
   return (
     <ModalContext.Provider
@@ -41,6 +44,8 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
         setUserInfo,
         isDeleted,
         setIsDeleted,
+        isViewing,
+        setIsViewing,
       }}
     >
       {children}

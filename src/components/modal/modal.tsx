@@ -21,6 +21,7 @@ import {
   submitEditUser,
 } from "@/app/actions";
 import { IUserResponse } from "@/types/response-api";
+import Image from "next/image";
 
 export default function ModalComponent() {
   const {
@@ -32,6 +33,8 @@ export default function ModalComponent() {
     setUserInfo,
     isDeleted,
     setIsDeleted,
+    isViewing,
+    setIsViewing,
   } = useModal();
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -63,6 +66,7 @@ export default function ModalComponent() {
     setIsCreating(false);
     setIsEditing(false);
     setIsDeleted(false);
+    setIsViewing(false);
     setUserName("");
     setUserEmail("");
     setUserAge("");
@@ -153,18 +157,18 @@ export default function ModalComponent() {
   };
 
   useEffect(() => {
-    if (isEditing) {
+    if (isEditing || isViewing) {
       setUserName(userInfo?.username);
       setUserEmail(userInfo?.email);
       setUserAge(userInfo?.age?.toString());
       setUserAvatar(userInfo?.avatar);
     }
-  }, [isEditing]);
+  }, [isEditing, isViewing]);
 
   return (
     <>
       <Modal
-        isOpen={isCreating || isEditing || isDeleted}
+        isOpen={isCreating || isEditing || isDeleted || isViewing}
         onClose={onCloseModal}
         // onOpenChange={onOpenChange}
         placement="auto"
@@ -184,7 +188,9 @@ export default function ModalComponent() {
                   ? "Novo Usuário"
                   : isEditing
                   ? "Editar Usuário"
-                  : "Deletar Usuário"}
+                  : isDeleted
+                  ? "Deletar Usuário"
+                  : "Detalhes do Usuário"}
               </ModalHeader>
 
               <form method="POST" action="#" onSubmit={onSubmit}>
@@ -200,11 +206,8 @@ export default function ModalComponent() {
                     </>
                   ) : (
                     <>
-                      <p>
-                        Tem certeza que deseja{" "}
-                        {isCreating ? "criar" : "atualizar"} este usuário?
-                      </p>
                       <Input
+                        isDisabled={isViewing}
                         isClearable
                         value={userName}
                         type="text"
@@ -227,6 +230,7 @@ export default function ModalComponent() {
                       />
 
                       <Input
+                        isDisabled={isViewing}
                         isClearable
                         value={userEmail}
                         type="email"
@@ -252,6 +256,7 @@ export default function ModalComponent() {
                       />
 
                       <Input
+                        isDisabled={isViewing}
                         isClearable
                         value={String(userAge)}
                         type="string"
@@ -275,30 +280,41 @@ export default function ModalComponent() {
                         labelPlacement="outside"
                       />
 
-                      <Input
-                        isClearable
-                        value={userAvatar}
-                        type="string"
-                        label="Avatar"
-                        variant="bordered"
-                        placeholder="Digite a url da imagem"
-                        isInvalid={isValidAvatar}
-                        color={
-                          userAvatar === ""
-                            ? "primary"
-                            : isValidAvatar
-                            ? "danger"
-                            : "success"
-                        }
-                        errorMessage={
-                          isValidAvatar &&
-                          "Insira uma url válida (Ex: https://images.com)"
-                        }
-                        onClear={() => setUserAvatar("")}
-                        onValueChange={setUserAvatar}
-                        className="w-full text-xs"
-                        labelPlacement="outside"
-                      />
+                      {isViewing ? (
+                        <Image
+                          src={userInfo?.avatar}
+                          alt="Avatar do usuário"
+                          width={96}
+                          height={96}
+                          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] m-auto mt-4 rounded-xl"
+                        />
+                      ) : (
+                        <Input
+                          isDisabled={isViewing}
+                          isClearable
+                          value={userAvatar}
+                          type="string"
+                          label="Avatar"
+                          variant="bordered"
+                          placeholder="Digite a url da imagem"
+                          isInvalid={isValidAvatar}
+                          color={
+                            userAvatar === ""
+                              ? "primary"
+                              : isValidAvatar
+                              ? "danger"
+                              : "success"
+                          }
+                          errorMessage={
+                            isValidAvatar &&
+                            "Insira uma url válida (Ex: https://images.com)"
+                          }
+                          onClear={() => setUserAvatar("")}
+                          onValueChange={setUserAvatar}
+                          className="w-full text-xs"
+                          labelPlacement="outside"
+                        />
+                      )}
                     </>
                   )}
                 </ModalBody>
@@ -306,26 +322,28 @@ export default function ModalComponent() {
                 <ModalFooter>
                   <Button
                     variant="bordered"
-                    color="danger"
+                    className="bg-transparent text-default-100 border-1 border-red-800/40 hover:bg-red-600/50 hover:border-1 hover:border-red-100 disabled:opacity-10"
                     onPress={onCloseModal}
                     size="sm"
                     type="button"
                   >
-                    Cancelar
+                    {isViewing ? "Fechar" : "Cancelar"}
                   </Button>
 
-                  <Button
-                    className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100 disabled:opacity-10"
-                    onPress={onClose}
-                    size="sm"
-                    type="submit"
-                  >
-                    {isCreating
-                      ? "Cadastrar usuário"
-                      : isEditing
-                      ? "Salvar alterações"
-                      : "Sim, deletar"}
-                  </Button>
+                  {!isViewing && (
+                    <Button
+                      className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100 disabled:opacity-10"
+                      onPress={onClose}
+                      size="sm"
+                      type="submit"
+                    >
+                      {isCreating
+                        ? "Cadastrar usuário"
+                        : isEditing
+                        ? "Salvar alterações"
+                        : "Sim, deletar"}
+                    </Button>
+                  )}
                 </ModalFooter>
               </form>
             </>

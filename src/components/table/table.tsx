@@ -31,6 +31,8 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
     setUserInfo,
     isDeleted,
     setIsDeleted,
+    isViewing,
+    setIsViewing,
   } = useModal();
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -94,7 +96,7 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
     }
   }, []);
 
-  const bottomPaginate = useMemo(() => {
+  const bottomTableActions = useMemo(() => {
     return (
       <div className="py-2 px-2 grid grid-cols-2">
         <span className="text-default-400 text-xs col-start-1">
@@ -170,88 +172,102 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
       <div className="mt-2 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full">
-              <HeaderTable />
+            {sortedItems.length === 0 ? (
+              <div className="w-full pt-9">
+                <p className="text-default-200 ">Nenhum usuário encontrado.</p>
+              </div>
+            ) : (
+              <>
+                <table className="min-w-full">
+                  <HeaderTable />
 
-              <tbody className="divide-y divide-foreground-800 bg-[#121212]">
-                {sortedItems.map((user) => (
-                  <tr key={user._id}>
-                    <td className="whitespace-nowrap text-sm font-medium text-foreground-50 pl-4">
-                      <div className="flex items-center">
-                        <div className="h-11 w-11 flex-shrink-0">
-                          <Image
-                            className="h-11 w-11 rounded-full"
-                            src={user.avatar}
-                            alt={user.username + " avatar"}
-                            width={70}
-                            height={70}
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="font-medium text-default-200">
-                            {user.username}
+                  <tbody className="divide-y divide-foreground-800 bg-[#121212]">
+                    {sortedItems.map((user) => (
+                      <tr key={user._id}>
+                        <td className="whitespace-nowrap text-sm font-medium text-foreground-50 pl-4">
+                          <div className="flex items-center">
+                            <div className="h-11 w-11 flex-shrink-0">
+                              <Image
+                                className="h-11 w-11 rounded-full"
+                                src={user.avatar}
+                                alt={user.username + " avatar"}
+                                width={70}
+                                height={70}
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="font-medium text-default-200">
+                                {user.username}
+                              </div>
+                              <div className="mt-1 text-foreground-50 text-xs font-light">
+                                {user.email}
+                              </div>
+                            </div>
                           </div>
-                          <div className="mt-1 text-foreground-50 text-xs font-light">
-                            {user.email}
+                        </td>
+                        <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
+                          {user.email}
+                        </td>
+                        <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
+                          {user.age}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="flex justify-end items-center gap-1 pr-6 h-14">
+                          <div>
+                            <Tooltip content="Ver detalhes">
+                              <Button
+                                className="bg-transparent text-default-100 hover:bg-blue-600"
+                                endContent={
+                                  <EyeIcon size={18} fill="#f8f6f6" />
+                                }
+                                size="sm"
+                                onClick={() => {
+                                  setUserInfo(user);
+                                  setIsViewing(!isViewing);
+                                }}
+                              />
+                            </Tooltip>
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
-                      {user.email}
-                    </td>
-                    <td className="whitespace-nowrap px-3 text-sm text-foreground-50">
-                      {user.age}
-                    </td>
+                          <div>
+                            <Tooltip content="Editar">
+                              <Button
+                                className="bg-transparent text-default-100 hover:bg-blue-600"
+                                endContent={
+                                  <EditIcon size={18} fill="#f8f6f6" />
+                                }
+                                size="sm"
+                                onClick={() => {
+                                  setUserInfo(user);
+                                  setIsEditing(!isEditing);
+                                }}
+                              />
+                            </Tooltip>
+                          </div>
+                          <div>
+                            <Tooltip content="Deletar">
+                              <Button
+                                className="bg-transparent text-default-100 hover:bg-blue-600"
+                                endContent={
+                                  <DeleteIcon size={18} fill="#f8f6f6" />
+                                }
+                                size="sm"
+                                onClick={() => {
+                                  setUserInfo(user);
+                                  setIsDeleted(!isDeleted);
+                                }}
+                              />
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-                    {/* Actions */}
-                    <td className="flex justify-end items-center gap-1 pr-6 h-14">
-                      <div>
-                        <Tooltip content="Ver detalhes">
-                          <Button
-                            className="bg-transparent text-default-100 hover:bg-blue-600"
-                            endContent={<EyeIcon size={18} fill="#f8f6f6" />}
-                            size="sm"
-                            onClick={() => {
-                              setUserInfo(user);
-                              setIsEditing(!isEditing);
-                            }}
-                          />
-                        </Tooltip>
-                      </div>
-                      <div>
-                        <Tooltip content="Editar">
-                          <Button
-                            className="bg-transparent text-default-100 hover:bg-blue-600"
-                            endContent={<EditIcon size={18} fill="#f8f6f6" />}
-                            size="sm"
-                            onClick={() => {
-                              setUserInfo(user);
-                              setIsEditing(!isEditing);
-                            }}
-                          />
-                        </Tooltip>
-                      </div>
-                      <div>
-                        <Tooltip content="Deletar">
-                          <Button
-                            className="bg-transparent text-default-100 hover:bg-blue-600"
-                            endContent={<DeleteIcon size={18} fill="#f8f6f6" />}
-                            size="sm"
-                            onClick={() => {
-                              setUserInfo(user);
-                              setIsDeleted(!isDeleted);
-                            }}
-                          />
-                        </Tooltip>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {bottomPaginate}
+                {bottomTableActions}
+              </>
+            )}
           </div>
         </div>
       </div>
