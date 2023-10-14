@@ -3,9 +3,6 @@ import type { Metadata } from "next";
 import { clsx } from "@nextui-org/shared-utils";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "./providers";
-import NavbarComponent from "@/components/navbar";
-import router from "@/config/routes.json";
-import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
   title: "Dashskins",
@@ -40,12 +37,7 @@ export default function RootLayout({
             className="relative flex flex-col justify-between min-h-screen"
             id="app-container"
           >
-            <NavbarComponent
-              mobileRoutes={router.mobileRoutes}
-              routes={router.routes}
-            />
             {children}
-            <Footer />
           </div>
         </Providers>
       </body>

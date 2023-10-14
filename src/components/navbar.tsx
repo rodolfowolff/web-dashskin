@@ -14,6 +14,7 @@ import {
   NavbarMenuItem,
 } from "@nextui-org/react";
 import { IRoutes } from "@/types/routes-type";
+import { useUser } from "@/context/userAuthContext";
 
 export default function NavbarComponent({
   mobileRoutes,
@@ -23,11 +24,7 @@ export default function NavbarComponent({
   routes: IRoutes[];
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userAuth, setUserAuth] = useState({
-    username: "rwolff",
-    email: "a@a.com",
-    age: 25,
-  });
+  const { logOut, userData } = useUser();
 
   return (
     <Navbar
@@ -64,7 +61,7 @@ export default function NavbarComponent({
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden sm:flex gap-2">
-          {userAuth && userAuth.username && (
+          {userData && (
             <>
               <Link
                 href="#"
@@ -75,21 +72,21 @@ export default function NavbarComponent({
               </Link>
 
               <Link
-                href="#"
+                href="/"
                 size="sm"
                 className="text-default-100 py-1 px-4 rounded"
+                onClick={logOut}
               >
                 Sair
               </Link>
             </>
           )}
 
-          {!userAuth ||
-            (!userAuth.username && (
-              <Link href="#" color="foreground">
-                Cadastrar
-              </Link>
-            ))}
+          {!userData && (
+            <Link href="/" size="sm" color="foreground">
+              Cadastrar
+            </Link>
+          )}
         </NavbarItem>
       </NavbarContent>
 
@@ -103,7 +100,12 @@ export default function NavbarComponent({
       <NavbarMenu className="bg-[#111111]">
         {mobileRoutes.map((route: IRoutes) => (
           <NavbarMenuItem key={route.key}>
-            <Link className="w-full" color="primary" href="#" size="lg">
+            <Link
+              className="w-full"
+              color="primary"
+              href={route.path}
+              size="lg"
+            >
               {route.title}
             </Link>
           </NavbarMenuItem>

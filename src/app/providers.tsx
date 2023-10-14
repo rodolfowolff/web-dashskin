@@ -3,6 +3,7 @@
 import * as React from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { ModalProvider } from "@/context/modalContext";
+import { UserProvider } from "@/context/userAuthContext";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -11,7 +12,9 @@ export interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ModalProvider>
-      <NextUIProvider>{children}</NextUIProvider>
+      <NextUIProvider>
+        <UserProvider>{children}</UserProvider>
+      </NextUIProvider>
     </ModalProvider>
   );
 }

@@ -3,7 +3,7 @@ import { Spinner } from "@nextui-org/react";
 
 export default function Loading() {
   return (
-    <div className="w-full h-full items-center justify-center">
+    <div className="w-full min-h-screen flex items-center justify-center">
       <Spinner className="m-auto w-full" />
     </div>
   );
