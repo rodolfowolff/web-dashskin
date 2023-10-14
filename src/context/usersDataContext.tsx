@@ -30,15 +30,15 @@ export const UsersDataProvider = ({
   children: React.ReactNode;
 }) => {
   const [usersData, setUsersData] = useState<[] | IUserResponse[]>([]);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const token = getCookie("dashskins-access-token") as string;
 
   async function getUsersData() {
-    if (!token) {
-      throw new Error("getUsersData error");
-    }
     try {
       setIsFetching(true);
+      if (!token) {
+        throw new Error("getUsersData error");
+      }
       const res = await fetch("http://localhost:3333/api/users", {
         method: "GET",
         headers: {
@@ -79,19 +79,27 @@ export const UsersDataProvider = ({
     loadUsersData();
   }, []);
 
-  const contextData = useMemo(
-    () => ({
-      usersData,
-      setUsersData,
-      getUsersData,
-      isFetching,
-      setIsFetching,
-    }),
-    [isFetching]
-  );
+  // const contextData = useMemo(
+  //   () => ({
+  //     usersData,
+  //     setUsersData,
+  //     getUsersData,
+  //     isFetching,
+  //     setIsFetching,
+  //   }),
+  //   [isFetching]
+  // );
 
   return (
-    <UsersDataContext.Provider value={contextData}>
+    <UsersDataContext.Provider
+      value={{
+        usersData,
+        setUsersData,
+        getUsersData,
+        isFetching,
+        setIsFetching,
+      }}
+    >
       {children}
     </UsersDataContext.Provider>
   );

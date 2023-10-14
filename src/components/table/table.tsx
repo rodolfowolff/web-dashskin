@@ -23,7 +23,7 @@ import ModalComponent from "../modal/modal";
 import Loading from "@/app/loading";
 import { useUsersData } from "@/context/usersDataContext";
 
-export const TableComponent = async () => {
+export const TableComponent = () => {
   const { usersData, isFetching } = useUsersData();
   // const [usersData, setUsersData] = useState<IUserResponse[]>([]);
   // const [isLoading, setIsLoading] = useState(true);
@@ -156,23 +156,21 @@ export const TableComponent = async () => {
     return <Loading />;
   }
 
+  if (!usersData) {
+    console.log("!!!!!!!!!!!!!!!!!!usersData isFetching", usersData);
+    return (
+      <div className="px-4 sm:px-6 lg:px-8">
+        <p>Nenhum usuário encontrado.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <>{console.log("usersData", usersData)}</>
-      {!isFetching && usersData.length === 0 ? (
-        <div className="w-full pt-9">
-          <p className="text-default-200 ">Nenhum usuário encontrado.</p>
-        </div>
-      ) : (
-        <div>
-          {!isFetching && usersData.length > 0 ? (
-            <p> {usersData.length} usuários encontrados.</p>
-          ) : (
-            <p> {usersData.length} usuários encontrados.</p>
-          )}
-        </div>
-        //   <>
-        // <div className="mt-4 flex flex-wrap w-full gap-2 items-center md:justify-between">
+      <>{console.log("usersData isFetching render =>", usersData)}</>
+      <p> {usersData.length} usuários encontrados.</p>
+
+      {/* // <div className="mt-4 flex flex-wrap w-full gap-2 items-center md:justify-between">
         //   <div className="flex w-full sm:w-[34rem] bg-zinc-800 h-8 rounded-lg">
         //     <Input
         //       isClearable
@@ -302,9 +300,8 @@ export const TableComponent = async () => {
         //       )}
         //     </div>
         //   </div>
-        // </div>
-        // </>
-      )}
+        // </div> */}
+
       <ModalComponent />
     </div>
   );

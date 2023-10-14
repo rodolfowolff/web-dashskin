@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
 interface UserType {
   username: string;
@@ -84,7 +86,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         username: "admin@admin.com",
         email: "admin@admin.com",
       });
-      return;
+      window.location.href = "/dashboard";
     } catch (error: any) {
       console.error(error);
 
@@ -96,7 +98,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     deleteCookie("dashskins-access-token");
     setUserData(null);
     window.location.href = "/";
-    return;
   }
 
   const contextData = useMemo(

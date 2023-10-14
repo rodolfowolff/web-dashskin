@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { useUser } from "@/context/userAuthContext";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { NextResponse } from "next/server";
 
 const LoginSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -17,12 +18,13 @@ export default function UserLogin() {
   const { logIn, userData } = useUser();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log("userData", userData);
-    if (userData && userData.email === "admin@admin.com") {
-      redirect("/dashboard");
-    }
-  }, [userData]);
+  // useEffect(() => {
+  //   console.log("UserLogin no userData", userData);
+  //   if (userData && userData.email === "admin@admin.com") {
+  //     console.log("redirect dashboard");
+  //     redirect("/dashboard");
+  //   }
+  // }, []);
 
   const {
     handleSubmit,
@@ -36,8 +38,7 @@ export default function UserLogin() {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      const user = await logIn("admin@admin.com", "admin123");
-      console.log("user", user);
+      await logIn("admin@admin.com", "admin123"); // TODO: apeas para teste
     } catch (error) {
       console.error(error);
     } finally {
@@ -77,7 +78,7 @@ export default function UserLogin() {
                 required
                 className="block w-full bg-zinc-900 rounded-md border-0 py-1.5 px-2 text-default-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 placeholder="Digite seu email"
-                // disabled={emailSent}
+                disabled={loading}
                 {...register("email")}
               />
               {errors.email && <p>{errors.email.message}</p>}
@@ -109,6 +110,7 @@ export default function UserLogin() {
                 required
                 className="block w-full bg-zinc-900 rounded-md border-0 py-1.5 px-2 text-default-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                 {...register("password")}
+                disabled={loading}
               />
               {errors.password && <p>{errors.password.message}</p>}
             </div>
@@ -118,6 +120,7 @@ export default function UserLogin() {
             <button
               type="submit"
               className="flex w-full justify-center rounded-md bg-blue-600 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+              disabled={loading}
             >
               Entrar
             </button>
