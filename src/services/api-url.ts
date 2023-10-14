@@ -32,3 +32,19 @@ export async function createUser(data: { username: string, email: string, age: n
 
   return await res.json();
 };
+
+export async function editUser(data: { _id: string, username: string, email: string, age: number, avatar: string }) {
+  const res = await fetch(`${baseUrl}/users/${data._id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+
+  return await res.json();
+};

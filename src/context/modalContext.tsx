@@ -1,36 +1,44 @@
 "use client";
 
+import { IUserResponse } from "@/types/response-api";
 import React, { createContext, useContext, useState } from "react";
 
-type VisibleModalContextType = {
-  visibleModal: boolean;
-  setVisibleModal: React.Dispatch<React.SetStateAction<boolean>>;
+type ModalContextType = {
+  isCreating: boolean;
+  setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
+  isEditing: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  userInfo: IUserResponse;
+  setUserInfo: React.Dispatch<React.SetStateAction<IUserResponse>>;
 };
 
-const VisibleModalContext = createContext<VisibleModalContextType | undefined>(
-  undefined
-);
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-export const useVisibleModal = () => {
-  const context = useContext(VisibleModalContext);
+export const useModal = () => {
+  const context = useContext(ModalContext);
   if (!context) {
-    throw new Error(
-      "useVisibleModal must be used within a VisibleModalProvider"
-    );
+    throw new Error("useModal must be used within a ModalProvider");
   }
   return context;
 };
 
-export const VisibleModalProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [visibleModal, setVisibleModal] = useState(false);
+export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [userInfo, setUserInfo] = useState({} as IUserResponse);
 
   return (
-    <VisibleModalContext.Provider value={{ visibleModal, setVisibleModal }}>
+    <ModalContext.Provider
+      value={{
+        isCreating,
+        setIsCreating,
+        isEditing,
+        setIsEditing,
+        userInfo,
+        setUserInfo,
+      }}
+    >
       {children}
-    </VisibleModalContext.Provider>
+    </ModalContext.Provider>
   );
 };

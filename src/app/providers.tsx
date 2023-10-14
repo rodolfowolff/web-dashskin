@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { NextUIProvider } from "@nextui-org/react";
-import { VisibleModalProvider } from "@/context/modalContext";
+import { ModalProvider } from "@/context/modalContext";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -10,8 +10,8 @@ export interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <VisibleModalProvider>
+    <ModalProvider>
       <NextUIProvider>{children}</NextUIProvider>
-    </VisibleModalProvider>
+    </ModalProvider>
   );
 }

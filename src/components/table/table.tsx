@@ -2,16 +2,34 @@
 
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import Image from "next/image";
-import { Input, Button, Pagination, SortDescriptor } from "@nextui-org/react";
-import { PlusIcon, SearchIcon } from "@/components/icons";
+import {
+  Input,
+  Button,
+  Pagination,
+  SortDescriptor,
+  Tooltip,
+} from "@nextui-org/react";
+import {
+  DeleteIcon,
+  EditIcon,
+  EyeIcon,
+  PlusIcon,
+  SearchIcon,
+} from "@/components/icons";
 import { IUserResponse } from "@/types/response-api";
 import { HeaderTable } from "./header-table";
-import { ActionsTableComponent } from "./actions-table";
-import { useVisibleModal } from "@/context/modalContext";
+import { useModal } from "@/context/modalContext";
 import ModalComponent from "../modal/modal";
 
 export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
-  const { visibleModal, setVisibleModal } = useVisibleModal();
+  const {
+    isCreating,
+    setIsCreating,
+    isEditing,
+    setIsEditing,
+    userInfo,
+    setUserInfo,
+  } = useModal();
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -140,7 +158,7 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
             className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100"
             endContent={<PlusIcon />}
             size="sm"
-            onClick={() => setVisibleModal(!visibleModal)}
+            onClick={() => setIsCreating(!isCreating)}
           >
             Adicionar usuário
           </Button>
@@ -184,7 +202,48 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
                       {user.age}
                     </td>
 
-                    <ActionsTableComponent user={user} />
+                    {/* Actions */}
+                    <td className="flex justify-end items-center gap-1 pr-6 h-14">
+                      <div>
+                        <Tooltip content="Ver detalhes">
+                          <Button
+                            className="bg-transparent text-default-100 hover:bg-blue-600"
+                            endContent={<EyeIcon size={18} fill="#f8f6f6" />}
+                            size="sm"
+                            onClick={() => {
+                              setUserInfo(user);
+                              setIsEditing(!isEditing);
+                            }}
+                          />
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Tooltip content="Editar">
+                          <Button
+                            className="bg-transparent text-default-100 hover:bg-blue-600"
+                            endContent={<EditIcon size={18} fill="#f8f6f6" />}
+                            size="sm"
+                            onClick={() => {
+                              setUserInfo(user);
+                              setIsEditing(!isEditing);
+                            }}
+                          />
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Tooltip content="Deletar">
+                          <Button
+                            className="bg-transparent text-default-100 hover:bg-blue-600"
+                            endContent={<DeleteIcon size={18} fill="#f8f6f6" />}
+                            size="sm"
+                            onClick={() => {
+                              setUserInfo(user);
+                              setIsEditing(!isEditing);
+                            }}
+                          />
+                        </Tooltip>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

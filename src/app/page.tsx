@@ -1,10 +1,11 @@
 import { getUsers } from "@/services/api-url";
-import { IResponseApi } from "@/types/response-api";
+import { IUserResponse } from "@/types/response-api";
 import { TableComponent } from "@/components/table/table";
 
 export default async function Home() {
-  let users: IResponseApi = await getUsers();
-  if (!users || !users.response.success) {
+  let usersData: IUserResponse[] | null = await getUsers();
+
+  if (!usersData) {
     return null;
   }
 
@@ -21,7 +22,7 @@ export default async function Home() {
 
       <div className="h-2 w-full bg-transparent my-5" />
 
-      <TableComponent users={users.response.data || []} />
+      <TableComponent users={usersData} />
     </main>
   );
 }

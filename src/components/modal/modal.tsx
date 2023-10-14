@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -15,10 +15,18 @@ import {
   validateEmail,
   validateName,
 } from "@/utils/validations";
-import submitCreateUser from "@/app/actions";
+import { submitCreateUser, submitEditUser } from "@/app/actions";
+import { IUserResponse } from "@/types/response-api";
 
 export default function ModalComponent() {
-  const { visibleModal, setVisibleModal } = useModal();
+  const {
+    isCreating,
+    setIsCreating,
+    isEditing,
+    setIsEditing,
+    userInfo,
+    setUserInfo,
+  } = useModal();
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userAge, setUserAge] = useState("");
@@ -45,7 +53,9 @@ export default function ModalComponent() {
   }, [userAvatar]);
 
   const onCloseModal = () => {
-    setVisibleModal(false);
+    setUserInfo({} as IUserResponse);
+    setIsCreating(false);
+    setIsEditing(false);
     setUserName("");
     setUserEmail("");
     setUserAge("");
@@ -55,31 +65,82 @@ export default function ModalComponent() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isInvalidName || isInvalidEmail || isInvalidAge) {
+    let isValid = true;
+
+    if (userName === "" || !validateName(userName)) {
+      isValid = false;
+    }
+
+    if (userEmail === "" || !validateEmail(userEmail)) {
+      isValid = false;
+    }
+
+    if (userAge === "" || !validateAge(+userAge)) {
+      isValid = false;
+    }
+
+    if (userAvatar === "" || !validateAvatar(userAvatar)) {
+      isValid = false;
+    }
+
+    if (!isValid) {
+      alert("Preencha os campos corretamente");
       return;
     }
 
-    try {
-      await submitCreateUser({
-        username: userName,
-        email: userEmail,
-        age: +userAge,
-        avatar: userAvatar,
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
+    if (isCreating) {
+      try {
+        await submitCreateUser({
+          username: userName,
+          email: userEmail,
+          age: +userAge,
+          avatar: userAvatar,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error);
+        }
+        //TODO: show error
+        return;
+      } finally {
+        onCloseModal();
       }
-      return;
-    } finally {
-      onCloseModal();
+    }
+
+    if (isEditing) {
+      try {
+        await submitEditUser({
+          _id: userInfo?._id,
+          username: userName ?? userInfo?.username,
+          email: userEmail ?? userInfo?.email,
+          age: +userAge ?? userInfo?.age,
+          avatar: userAvatar ?? userInfo?.avatar,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error);
+        }
+        //TODO: show error
+        return;
+      } finally {
+        onCloseModal();
+      }
     }
   };
+
+  useEffect(() => {
+    if (isEditing) {
+      setUserName(userInfo?.username);
+      setUserEmail(userInfo?.email);
+      setUserAge(userInfo?.age?.toString());
+      setUserAvatar(userInfo?.avatar);
+    }
+  }, [isEditing]);
 
   return (
     <>
       <Modal
-        isOpen={visibleModal}
+        isOpen={isCreating || isEditing}
         onClose={onCloseModal}
         // onOpenChange={onOpenChange}
         placement="auto"
@@ -95,7 +156,7 @@ export default function ModalComponent() {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Cadastrar
+                {isCreating ? "Novo Usuário" : "Editar Usuário"}
               </ModalHeader>
 
               <form method="POST" action="#" onSubmit={onSubmit}>
@@ -149,7 +210,7 @@ export default function ModalComponent() {
 
                   <Input
                     isClearable
-                    value={userAge}
+                    value={String(userAge)}
                     type="string"
                     label="Idade"
                     variant="bordered"
@@ -213,7 +274,7 @@ export default function ModalComponent() {
                     size="sm"
                     type="submit"
                   >
-                    Cadastrar
+                    {isCreating ? "Cadastrar" : "Editar"}
                   </Button>
                 </ModalFooter>
               </form>
