@@ -8,7 +8,7 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import { useVisibleModal } from "@/context/modalContext";
+import { useModal } from "@/context/modalContext";
 import {
   validateAge,
   validateAvatar,
@@ -18,7 +18,7 @@ import {
 import submitCreateUser from "@/app/actions";
 
 export default function ModalComponent() {
-  const { visibleModal, setVisibleModal } = useVisibleModal();
+  const { visibleModal, setVisibleModal } = useModal();
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userAge, setUserAge] = useState("");
@@ -85,7 +85,6 @@ export default function ModalComponent() {
         placement="auto"
         classNames={{
           body: "py-6",
-          backdrop: "bg-[#111111]/90 backdrop-opacity-90",
           base: "border-[#111111] bg-[#111111] dark:bg-[#111111] text-[#f4f4f4]",
           header: "border-b-[1px] border-[#f4f4f2]",
           footer: "border-t-[1px] border-[#111111]",
