@@ -48,3 +48,18 @@ export async function editUser(data: { _id: string, username: string, email: str
 
   return await res.json();
 };
+
+export async function deleteUser(id: string) {
+  const res = await fetch(`${baseUrl}/users/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(res.statusText);
+  }
+
+  return;
+};

@@ -29,6 +29,8 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
     setIsEditing,
     userInfo,
     setUserInfo,
+    isDeleted,
+    setIsDeleted,
   } = useModal();
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -238,7 +240,7 @@ export const TableComponent = ({ users }: { users: IUserResponse[] }) => {
                             size="sm"
                             onClick={() => {
                               setUserInfo(user);
-                              setIsEditing(!isEditing);
+                              setIsDeleted(!isDeleted);
                             }}
                           />
                         </Tooltip>
