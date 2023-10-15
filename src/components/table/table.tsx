@@ -21,20 +21,11 @@ import { HeaderTable } from "./header-table";
 import { useModal } from "@/context/modalContext";
 import ModalComponent from "../modal/modal";
 import Loading from "@/app/loading";
-import { useUsersData } from "@/context/usersDataContext";
+import { useUserStore } from "@/hooks/useUsers";
 
 export const TableComponent = () => {
-  const { usersData, isFetching } = useUsersData();
-  // const [usersData, setUsersData] = useState<IUserResponse[]>([]);
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // useEffect(() => {
-  //   console.log("isFetching", isFetching);
-  //   setIsLoading(true);
-  //   setUsersData(users);
-  //   setIsLoading(false);
-  // }, [isFetching, usersData]);
-
+  const { users, fetchUsers } = useUserStore();
+  const [isFetching, setIsFetching] = useState(false);
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -43,12 +34,17 @@ export const TableComponent = () => {
   });
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setIsFetching(true);
+    fetchUsers();
+    setIsFetching(false);
+  }, []);
+
   const {
     isCreating,
     setIsCreating,
     isEditing,
     setIsEditing,
-    userInfo,
     setUserInfo,
     isDeleted,
     setIsDeleted,
@@ -56,12 +52,12 @@ export const TableComponent = () => {
     setIsViewing,
   } = useModal();
 
-  const pages = Math.ceil(usersData.length / rowsPerPage);
+  const pages = Math.ceil(users.length / rowsPerPage);
 
   const hasSearchFilter = Boolean(filterValue);
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...usersData];
+    let filteredUsers = [...users];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -70,7 +66,7 @@ export const TableComponent = () => {
     }
 
     return filteredUsers;
-  }, [usersData, hasSearchFilter, filterValue]);
+  }, [users, hasSearchFilter, filterValue]);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
@@ -114,7 +110,7 @@ export const TableComponent = () => {
     return (
       <div className="py-2 px-2 grid grid-cols-2">
         <span className="text-default-400 text-xs col-start-1">
-          Total {usersData.length} usuários
+          Total {users.length} usuários
         </span>
 
         <div className="col-start-2">
@@ -149,7 +145,7 @@ export const TableComponent = () => {
         </div>
       </div>
     );
-  }, [hasSearchFilter, onRowsPerPageChange, page, pages, usersData.length]);
+  }, [hasSearchFilter, onRowsPerPageChange, page, pages, users.length]);
 
   if (isFetching) {
     return <Loading />;
@@ -190,9 +186,9 @@ export const TableComponent = () => {
       <div className="mt-2 flow-root">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            {sortedItems.length === 0 ? (
+            {sortedItems?.length === 0 ? (
               <div className="w-full pt-9">
-                <p className="text-default-200 ">Nenhum usuário encontrado.</p>
+                <p className="text-default-200">Nenhum usuário encontrado.</p>
               </div>
             ) : (
               <>
@@ -200,7 +196,7 @@ export const TableComponent = () => {
                   <HeaderTable />
 
                   <tbody className="divide-y divide-foreground-800 bg-[#121212]">
-                    {sortedItems.map((user) => (
+                    {sortedItems?.map((user) => (
                       <tr key={user._id}>
                         <td className="whitespace-nowrap text-sm font-medium text-foreground-50 pl-4">
                           <div className="flex items-center">

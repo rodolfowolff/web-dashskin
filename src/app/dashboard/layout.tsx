@@ -5,7 +5,6 @@ import routes from "@/config/routes.json";
 import { Footer } from "@/components/footer";
 import { useUser } from "@/context/userAuthContext";
 import { redirect } from "next/navigation";
-import { UsersDataProvider } from "@/context/usersDataContext";
 import { useEffect } from "react";
 import Loading from "../loading";
 
@@ -31,14 +30,12 @@ export default function RootLayout({
       className="relative flex flex-col justify-between min-h-screen"
       id="app-container"
     >
-      <UsersDataProvider>
-        <NavbarComponent
-          mobileRoutes={routes.mobileRoutes}
-          routes={routes.routes}
-        />
-        {children}
-        <Footer />
-      </UsersDataProvider>
+      <NavbarComponent
+        mobileRoutes={routes.mobileRoutes}
+        routes={routes.routes}
+      />
+      {children}
+      <Footer />
     </div>
   );
 }

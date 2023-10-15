@@ -40,7 +40,7 @@ export default function NavbarComponent({
             alt="Logo"
             width={96}
             height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] w-auto h-auto"
           />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
@@ -53,7 +53,7 @@ export default function NavbarComponent({
             alt="Logo"
             width={96}
             height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] w-auto h-auto"
           />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
