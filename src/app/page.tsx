@@ -47,18 +47,16 @@ export default function UserLogin() {
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Image
-          src="/next.svg"
+          src="/logo.png"
           alt="Dashskins Logo"
           width={240}
           height={240}
-          className="dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert mx-auto"
+          className="dark:drop-shadow-[0_0_0.3rem_#ffffff70] mx-auto w-auto h-auto"
+          priority
         />
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-default-100">
-          Bem vindo ao Dashskins
-        </h2>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-20 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
@@ -90,14 +88,6 @@ export default function UserLogin() {
               >
                 Senha
               </label>
-              <div className="text-xs">
-                <a
-                  href="#"
-                  className="font-semibold text-blue-600 hover:text-blue-500"
-                >
-                  Esqueceu sua senha? Clique aqui
-                </a>
-              </div>
             </div>
 
             <div className="mt-1">

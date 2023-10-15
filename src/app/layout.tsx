@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Rodolfo Wolff", url: "https://github.com/rodolfowolff" }],
   creator: "Rodolfo Wolff",
   viewport:
-    "viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0",
+    "width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5",
 };
 
 export default function RootLayout({

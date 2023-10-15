@@ -36,11 +36,11 @@ export default function NavbarComponent({
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
           <Image
-            src="/next.svg"
+            src="/logo.png"
             alt="Logo"
             width={96}
             height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
           />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
@@ -49,11 +49,11 @@ export default function NavbarComponent({
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
           <Image
-            src="/next.svg"
+            src="/logo.png"
             alt="Logo"
             width={96}
             height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70]"
           />
           <p className="sr-only">NEXT</p>
         </NavbarBrand>
