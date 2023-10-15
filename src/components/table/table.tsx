@@ -154,7 +154,7 @@ export const TableComponent = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mt-4 flex flex-wrap w-full gap-2 items-center md:justify-between">
-        <div className="flex w-full sm:w-[34rem] bg-zinc-800 h-8 rounded-lg">
+        <div className="flex w-full sm:w-80 bg-zinc-800 h-8 rounded-lg">
           <Input
             isClearable
             classNames={{

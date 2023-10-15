@@ -33,29 +33,19 @@ export default function NavbarComponent({
       onMenuOpenChange={setIsMenuOpen}
       className="bg-dark"
     >
-      <NavbarContent className="sm:hidden pr-3" justify="center">
+      <NavbarContent className="sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={96}
-            height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] w-auto h-auto"
-          />
-          <p className="sr-only">NEXT</p>
-        </NavbarBrand>
-      </NavbarContent>
-
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarBrand>
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={96}
-            height={96}
-            className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] w-auto h-auto"
-          />
-          <p className="sr-only">NEXT</p>
+          <Link href="/dashboard" as="a">
+            <Image
+              src="/logo.png"
+              alt="Logo dashskins"
+              priority
+              width={96}
+              height={96}
+              className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] w-auto h-auto"
+            />
+          </Link>
+          <p className="sr-only">Dashskins</p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -63,22 +53,14 @@ export default function NavbarComponent({
         <NavbarItem className="hidden sm:flex gap-2">
           {userData && (
             <>
-              <Link
-                href="#"
-                size="sm"
-                className="text-default-100 py-1 px-4 rounded"
-              >
-                Dashboard
-              </Link>
-
-              <Link
-                href="/"
-                size="sm"
-                className="text-default-100 py-1 px-4 rounded"
+              <Button
+                variant="ghost"
                 onClick={logOut}
+                size="sm"
+                className="text-default-100 py-1 px-4 rounded hover:text-default-900"
               >
                 Sair
-              </Link>
+              </Button>
             </>
           )}
 
