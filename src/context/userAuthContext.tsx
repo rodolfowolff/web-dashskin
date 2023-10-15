@@ -2,8 +2,6 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
-import { NextRequest, NextResponse } from "next/server";
 
 interface UserType {
   username: string;
@@ -13,10 +11,10 @@ interface UserType {
 type UserContextType = {
   userData: null | UserType;
   setUserData: React.Dispatch<React.SetStateAction<null | UserType>>;
-  logIn: (email: string, senha: string) => Promise<void>;
+  logIn: (email: string, senha: string) => Promise<UserType | null>;
   logOut: () => Promise<void>;
-  isFetching: boolean;
-  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoadingUser: boolean;
+  setIsLoadingUser: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -31,11 +29,11 @@ export const useUser = () => {
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState<null | UserType>(null);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   async function loadCookieUserData() {
     try {
-      setIsFetching(true);
+      setIsLoadingUser(true);
       const token = getCookie("dashskins-access-token") as string;
 
       if (!token) {
@@ -51,7 +49,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: any) {
       console.error(error);
     } finally {
-      setIsFetching(false);
+      setIsLoadingUser(false);
     }
   }
 
@@ -86,7 +84,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         username: "admin@admin.com",
         email: "admin@admin.com",
       });
-      window.location.href = "/dashboard";
+
+      return userData;
     } catch (error: any) {
       console.error(error);
 
@@ -106,10 +105,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUserData,
       logIn,
       logOut,
-      isFetching,
-      setIsFetching,
+      isLoadingUser,
+      setIsLoadingUser,
     }),
-    [userData, isFetching]
+    [userData, isLoadingUser]
   );
 
   return (

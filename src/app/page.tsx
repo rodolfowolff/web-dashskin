@@ -7,7 +7,6 @@ import * as yup from "yup";
 import { useUser } from "@/context/userAuthContext";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { NextResponse } from "next/server";
 
 const LoginSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -18,13 +17,11 @@ export default function UserLogin() {
   const { logIn, userData } = useUser();
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //   console.log("UserLogin no userData", userData);
-  //   if (userData && userData.email === "admin@admin.com") {
-  //     console.log("redirect dashboard");
-  //     redirect("/dashboard");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (userData) {
+      redirect("/dashboard");
+    }
+  }, [userData]);
 
   const {
     handleSubmit,
@@ -38,7 +35,7 @@ export default function UserLogin() {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      await logIn("admin@admin.com", "admin123"); // TODO: apeas para teste
+      await logIn("admin@admin.com", "admin123");
     } catch (error) {
       console.error(error);
     } finally {

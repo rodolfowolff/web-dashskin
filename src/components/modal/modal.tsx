@@ -22,6 +22,7 @@ import {
 } from "@/app/actions";
 import { IUserResponse } from "@/types/response-api";
 import Image from "next/image";
+import { getCookie } from "cookies-next";
 
 export default function ModalComponent() {
   const {
@@ -114,15 +115,18 @@ export default function ModalComponent() {
       return;
     }
 
+    const token = getCookie("dashskins-access-token") as string;
     if (isCreating) {
       try {
-        await submitCreateUser({
-          username: userName,
-          email: userEmail,
-          age: +userAge,
-          avatar: userAvatar,
-        });
-        return;
+        await submitCreateUser(
+          {
+            username: userName,
+            email: userEmail,
+            age: +userAge,
+            avatar: userAvatar,
+          },
+          token
+        );
       } catch (error) {
         if (error instanceof Error) {
           console.error(error);

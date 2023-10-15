@@ -2,18 +2,18 @@ const baseUrl = process.env.NEXT_PUBLIC_URL_API;
 import { getCookie } from "cookies-next";
 
 export async function getUsers() {
-  const token = getCookie('dashskins-access-token') as string;
+  const token = getCookie("dashskins-access-token") as string;
   if (!token) {
     return null;
   }
   const res = await fetch(`${baseUrl}/users`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    cache: 'force-cache',
-    next: { tags: ['users'] },
+    cache: "force-cache",
+    next: { tags: ["users"] },
   });
 
   if (!res.ok) {
@@ -21,18 +21,24 @@ export async function getUsers() {
   }
 
   return await res.json();
-};
+}
 
-export async function createUser(data: { username: string, email: string, age: number, avatar: string }) {
-  const token = getCookie('dashskins-access-token') as string;
+export async function createUser(
+  data: {
+    username: string;
+    email: string;
+    age: number;
+    avatar: string;
+  },
+  token: string
+) {
   if (!token) {
     return null;
   }
-
   const res = await fetch(`${baseUrl}/users`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
@@ -43,18 +49,24 @@ export async function createUser(data: { username: string, email: string, age: n
   }
 
   return await res.json();
-};
+}
 
-export async function editUser(data: { _id: string, username: string, email: string, age: number, avatar: string }) {
-  const token = getCookie('dashskins-access-token') as string;
+export async function editUser(data: {
+  _id: string;
+  username: string;
+  email: string;
+  age: number;
+  avatar: string;
+}) {
+  const token = getCookie("dashskins-access-token") as string;
   if (!token) {
     return null;
   }
 
   const res = await fetch(`${baseUrl}/users/${data._id}`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
@@ -65,18 +77,18 @@ export async function editUser(data: { _id: string, username: string, email: str
   }
 
   return await res.json();
-};
+}
 
 export async function deleteUser(id: string) {
-  const token = getCookie('dashskins-access-token') as string;
+  const token = getCookie("dashskins-access-token") as string;
   if (!token) {
     return null;
   }
 
   const res = await fetch(`${baseUrl}/users/${id}`, {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -86,4 +98,4 @@ export async function deleteUser(id: string) {
   }
 
   return;
-};
+}

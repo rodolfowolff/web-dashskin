@@ -1,23 +1,30 @@
 "use client";
 
 import NavbarComponent from "@/components/navbar";
-import router from "@/config/routes.json";
+import routes from "@/config/routes.json";
 import { Footer } from "@/components/footer";
 import { useUser } from "@/context/userAuthContext";
 import { redirect } from "next/navigation";
-// import Loading from "../loading";
 import { UsersDataProvider } from "@/context/usersDataContext";
+import { useEffect } from "react";
+import Loading from "../loading";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { userData } = useUser();
-  console.log("userData RootLayout", userData);
-  // if (!userData || userData.email !== "admin@admin.com") {
-  //   redirect("/");
-  // }
+  const { userData, isLoadingUser } = useUser();
+
+  useEffect(() => {
+    if (!userData) {
+      redirect("/");
+    }
+  }, [userData]);
+
+  if (isLoadingUser) {
+    return <Loading />;
+  }
 
   return (
     <div
@@ -26,8 +33,8 @@ export default function RootLayout({
     >
       <UsersDataProvider>
         <NavbarComponent
-          mobileRoutes={router.mobileRoutes}
-          routes={router.routes}
+          mobileRoutes={routes.mobileRoutes}
+          routes={routes.routes}
         />
         {children}
         <Footer />
