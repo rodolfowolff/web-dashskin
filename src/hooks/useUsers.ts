@@ -1,15 +1,15 @@
-import { IUserResponse } from '@/types/response-api'
-import { create } from 'zustand'
+import { IUserResponse } from "@/types/response-api";
+import { create } from "zustand";
 import { getCookie } from "cookies-next";
 const baseUrl = process.env.NEXT_PUBLIC_URL_API;
 
 type Store = {
-  users: IUserResponse[]
-  fetchUsers: () => Promise<null | IUserResponse[] | undefined>
-  addUser: (data: Omit<IUserResponse, '_id'>) => void
-  editUser: (data: IUserResponse) => void
-  deleteUser: (id: string) => void
-}
+  users: IUserResponse[];
+  fetchUsers: () => Promise<null | IUserResponse[] | undefined>;
+  addUser: (data: Omit<IUserResponse, "_id">) => void;
+  editUser: (data: IUserResponse) => void;
+  deleteUser: (id: string) => void;
+};
 
 export const useUserStore = create<Store>()((set) => ({
   users: [],
@@ -20,20 +20,22 @@ export const useUserStore = create<Store>()((set) => ({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${token}`,
       },
     });
     const data = await res.json();
     set({ users: data });
   },
-  addUser: async (data: Omit<IUserResponse, '_id'>) => {
+  addUser: async (data: Omit<IUserResponse, "_id">) => {
     const token = getCookie("dashskins-access-token") as string;
     const response = await fetch(`${baseUrl}/users`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
       },
     });
     const res = await response.json();
@@ -42,11 +44,12 @@ export const useUserStore = create<Store>()((set) => ({
   editUser: async (data: IUserResponse) => {
     const token = getCookie("dashskins-access-token") as string;
     const response = await fetch(`${baseUrl}/users/${data._id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
       },
     });
     const res = await response.json();
@@ -57,10 +60,11 @@ export const useUserStore = create<Store>()((set) => ({
   deleteUser: async (userId: string) => {
     const token = getCookie("dashskins-access-token") as string;
     await fetch(`${baseUrl}/users/${userId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
       },
     });
     set((state) => ({

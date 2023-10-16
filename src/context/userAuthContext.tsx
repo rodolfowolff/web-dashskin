@@ -62,7 +62,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const baseUrl = process.env.NEXT_PUBLIC_URL_API;
       const res = await fetch(`${baseUrl}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
         body: JSON.stringify({
           email,
           password: senha,

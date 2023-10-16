@@ -10,6 +10,7 @@ export async function getUsers() {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     },
     cache: "force-cache",
@@ -39,6 +40,7 @@ export async function createUser(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
@@ -67,6 +69,7 @@ export async function editUser(data: {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
@@ -89,6 +92,7 @@ export async function deleteUser(id: string) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     },
   });
