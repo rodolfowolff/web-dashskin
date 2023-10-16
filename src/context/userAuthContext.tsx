@@ -59,7 +59,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   async function logIn(email: string, senha: string) {
     try {
-      const res = await fetch("http://localhost:3333/api/auth/login", {
+      const baseUrl = process.env.NEXT_PUBLIC_URL_API;
+      const res = await fetch(`${baseUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
