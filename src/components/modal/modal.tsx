@@ -18,6 +18,8 @@ import {
 import { IUserResponse } from "@/types/response-api";
 import Image from "next/image";
 import { useUserStore } from "@/hooks/useUsers";
+import { useNotification } from "@/context/notificationContext";
+import NotificationComponent from "../notification/notification";
 
 export default function ModalComponent() {
   const { addUser, editUser, deleteUser } = useUserStore();
@@ -33,6 +35,7 @@ export default function ModalComponent() {
     isViewing,
     setIsViewing,
   } = useModal();
+  const { setNotification } = useNotification();
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userAge, setUserAge] = useState("");
@@ -76,6 +79,10 @@ export default function ModalComponent() {
     if (isDeleted && userInfo?._id) {
       deleteUser(userInfo?._id);
       onCloseModal();
+      setNotification({
+        type: "success",
+        message: "Usuário deletado!",
+      });
       return;
     }
 
@@ -98,11 +105,13 @@ export default function ModalComponent() {
     }
 
     if (!isValid) {
-      alert("Preencha os campos corretamente");
+      setNotification({
+        type: "error",
+        message: "Preencha os campos corretamente!",
+      });
       return;
     }
 
-    // const token = getCookie("dashskins-access-token") as string;
     if (isCreating) {
       addUser({
         username: userName,
@@ -111,6 +120,10 @@ export default function ModalComponent() {
         avatar: userAvatar,
       });
       onCloseModal();
+      setNotification({
+        type: "success",
+        message: "Usuário criado!",
+      });
       return;
     }
 
@@ -123,6 +136,10 @@ export default function ModalComponent() {
         avatar: userAvatar ?? userInfo?.avatar,
       });
       onCloseModal();
+      setNotification({
+        type: "success",
+        message: "Usuário editado!",
+      });
       return;
     }
   };
@@ -144,188 +161,191 @@ export default function ModalComponent() {
   ]);
 
   return (
-    <Modal
-      isOpen={isCreating || isEditing || isDeleted || isViewing}
-      onClose={onCloseModal}
-      // onOpenChange={onOpenChange}
-      placement="auto"
-      classNames={{
-        body: "py-6",
-        base: "border-[#111111] bg-[#111111] dark:bg-[#111111] text-[#f4f4f4]",
-        header: "border-b-[1px] border-[#f4f4f2]",
-        footer: "border-t-[1px] border-[#111111]",
-        closeButton: "hover:bg-white/5 active:bg-white/10",
-      }}
-    >
-      <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">
-              {isCreating
-                ? "Novo Usuário"
-                : isEditing
-                ? "Editar Usuário"
-                : isDeleted
-                ? "Deletar Usuário"
-                : "Detalhes do Usuário"}
-            </ModalHeader>
+    <>
+      <Modal
+        isOpen={isCreating || isEditing || isDeleted || isViewing}
+        onClose={onCloseModal}
+        placement="auto"
+        classNames={{
+          body: "py-6",
+          base: "border-[#111111] bg-[#111111] dark:bg-[#111111] text-[#f4f4f4]",
+          header: "border-b-[1px] border-[#f4f4f2]",
+          footer: "border-t-[1px] border-[#111111]",
+          closeButton: "hover:bg-white/5 active:bg-white/10",
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {isCreating
+                  ? "Novo Usuário"
+                  : isEditing
+                  ? "Editar Usuário"
+                  : isDeleted
+                  ? "Deletar Usuário"
+                  : "Detalhes do Usuário"}
+              </ModalHeader>
 
-            <form method="POST" action="#" onSubmit={onSubmit}>
-              <ModalBody>
-                {isDeleted && userInfo ? (
-                  <>
-                    <p className="text-default-100 text-small">
-                      Tem certeza que deseja deletar o usuário:
-                    </p>
-                    <p className="text-blue-600 text-base font-bold">
-                      {userInfo?.username.toLocaleUpperCase()}?
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <Input
-                      isDisabled={isViewing}
-                      isClearable
-                      value={userName}
-                      type="text"
-                      label="Nome"
-                      variant="bordered"
-                      placeholder="Digite o nome"
-                      isInvalid={isInvalidName}
-                      color={
-                        userName === ""
-                          ? "primary"
-                          : isInvalidName
-                          ? "danger"
-                          : "success"
-                      }
-                      errorMessage={isInvalidName && "Insira um nome válido"}
-                      onClear={() => setUserName("")}
-                      onValueChange={setUserName}
-                      className="w-full"
-                      labelPlacement="outside"
-                    />
-
-                    <Input
-                      isDisabled={isViewing}
-                      isClearable
-                      value={userEmail}
-                      type="email"
-                      label="Email"
-                      variant="bordered"
-                      placeholder="Digite o email"
-                      isInvalid={isInvalidEmail}
-                      color={
-                        userEmail === ""
-                          ? "primary"
-                          : isInvalidEmail
-                          ? "danger"
-                          : "success"
-                      }
-                      errorMessage={
-                        isInvalidEmail &&
-                        "Insira um email válido (Ex: abc@abc.com)"
-                      }
-                      onClear={() => setUserEmail("")}
-                      onValueChange={setUserEmail}
-                      className="w-full"
-                      labelPlacement="outside"
-                    />
-
-                    <Input
-                      isDisabled={isViewing}
-                      isClearable
-                      value={String(userAge)}
-                      type="string"
-                      label="Idade"
-                      variant="bordered"
-                      placeholder="Digite a idade"
-                      isInvalid={isInvalidAge}
-                      color={
-                        userAge === ""
-                          ? "primary"
-                          : isInvalidEmail
-                          ? "danger"
-                          : "success"
-                      }
-                      errorMessage={
-                        isInvalidAge && "Insira uma idade válida (1-100)"
-                      }
-                      onClear={() => setUserAge("")}
-                      onValueChange={setUserAge}
-                      className="w-full text-xs"
-                      labelPlacement="outside"
-                    />
-
-                    {isViewing ? (
-                      <Image
-                        src={userInfo?.avatar}
-                        alt="Avatar do usuário"
-                        width={96}
-                        height={96}
-                        className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] m-auto mt-4 rounded-xl"
-                      />
-                    ) : (
+              <form method="POST" action="#" onSubmit={onSubmit}>
+                <ModalBody>
+                  {isDeleted && userInfo ? (
+                    <>
+                      <p className="text-default-100 text-small">
+                        Tem certeza que deseja deletar o usuário:
+                      </p>
+                      <p className="text-blue-600 text-base font-bold">
+                        {userInfo?.username.toLocaleUpperCase()}?
+                      </p>
+                    </>
+                  ) : (
+                    <>
                       <Input
                         isDisabled={isViewing}
                         isClearable
-                        value={userAvatar}
-                        type="string"
-                        label="Avatar"
+                        value={userName}
+                        type="text"
+                        label="Nome"
                         variant="bordered"
-                        placeholder="Digite a url da imagem"
-                        isInvalid={isValidAvatar}
+                        placeholder="Digite o nome"
+                        isInvalid={isInvalidName}
                         color={
-                          userAvatar === ""
+                          userName === ""
                             ? "primary"
-                            : isValidAvatar
+                            : isInvalidName
+                            ? "danger"
+                            : "success"
+                        }
+                        errorMessage={isInvalidName && "Insira um nome válido"}
+                        onClear={() => setUserName("")}
+                        onValueChange={setUserName}
+                        className="w-full"
+                        labelPlacement="outside"
+                      />
+
+                      <Input
+                        isDisabled={isViewing}
+                        isClearable
+                        value={userEmail}
+                        type="email"
+                        label="Email"
+                        variant="bordered"
+                        placeholder="Digite o email"
+                        isInvalid={isInvalidEmail}
+                        color={
+                          userEmail === ""
+                            ? "primary"
+                            : isInvalidEmail
                             ? "danger"
                             : "success"
                         }
                         errorMessage={
-                          isValidAvatar &&
-                          "Insira uma url válida (Ex: https://images.com)"
+                          isInvalidEmail &&
+                          "Insira um email válido (Ex: abc@abc.com)"
                         }
-                        onClear={() => setUserAvatar("")}
-                        onValueChange={setUserAvatar}
+                        onClear={() => setUserEmail("")}
+                        onValueChange={setUserEmail}
+                        className="w-full"
+                        labelPlacement="outside"
+                      />
+
+                      <Input
+                        isDisabled={isViewing}
+                        isClearable
+                        value={String(userAge)}
+                        type="string"
+                        label="Idade"
+                        variant="bordered"
+                        placeholder="Digite a idade"
+                        isInvalid={isInvalidAge}
+                        color={
+                          userAge === ""
+                            ? "primary"
+                            : isInvalidEmail
+                            ? "danger"
+                            : "success"
+                        }
+                        errorMessage={
+                          isInvalidAge && "Insira uma idade válida (1-100)"
+                        }
+                        onClear={() => setUserAge("")}
+                        onValueChange={setUserAge}
                         className="w-full text-xs"
                         labelPlacement="outside"
                       />
-                    )}
-                  </>
-                )}
-              </ModalBody>
 
-              <ModalFooter>
-                <Button
-                  variant="bordered"
-                  className="bg-transparent text-default-100 border-1 border-red-800/40 hover:bg-red-600/50 hover:border-1 hover:border-red-100 disabled:opacity-10"
-                  onPress={onCloseModal}
-                  size="sm"
-                  type="button"
-                >
-                  {isViewing ? "Fechar" : "Cancelar"}
-                </Button>
+                      {isViewing ? (
+                        <Image
+                          src={userInfo?.avatar}
+                          alt="Avatar do usuário"
+                          width={96}
+                          height={96}
+                          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] m-auto mt-4 rounded-xl"
+                        />
+                      ) : (
+                        <Input
+                          isDisabled={isViewing}
+                          isClearable
+                          value={userAvatar}
+                          type="string"
+                          label="Avatar"
+                          variant="bordered"
+                          placeholder="Digite a url da imagem"
+                          isInvalid={isValidAvatar}
+                          color={
+                            userAvatar === ""
+                              ? "primary"
+                              : isValidAvatar
+                              ? "danger"
+                              : "success"
+                          }
+                          errorMessage={
+                            isValidAvatar &&
+                            "Insira uma url válida (Ex: https://images.com)"
+                          }
+                          onClear={() => setUserAvatar("")}
+                          onValueChange={setUserAvatar}
+                          className="w-full text-xs"
+                          labelPlacement="outside"
+                        />
+                      )}
+                    </>
+                  )}
+                </ModalBody>
 
-                {!isViewing && (
+                <ModalFooter>
                   <Button
-                    className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100 disabled:opacity-10"
-                    onPress={onClose}
+                    variant="bordered"
+                    className="bg-transparent text-default-100 border-1 border-red-800/40 hover:bg-red-600/50 hover:border-1 hover:border-red-100 disabled:opacity-10"
+                    onPress={onCloseModal}
                     size="sm"
-                    type="submit"
+                    type="button"
                   >
-                    {isCreating
-                      ? "Cadastrar usuário"
-                      : isEditing
-                      ? "Salvar alterações"
-                      : "Sim, deletar"}
+                    {isViewing ? "Fechar" : "Cancelar"}
                   </Button>
-                )}
-              </ModalFooter>
-            </form>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+
+                  {!isViewing && (
+                    <Button
+                      className="bg-blue-700 text-default-100 border-1 border-transparent hover:bg-blue-600 hover:border-1 hover:border-blue-100 disabled:opacity-10"
+                      onPress={onClose}
+                      size="sm"
+                      type="submit"
+                    >
+                      {isCreating
+                        ? "Cadastrar usuário"
+                        : isEditing
+                        ? "Salvar alterações"
+                        : "Sim, deletar"}
+                    </Button>
+                  )}
+                </ModalFooter>
+              </form>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <NotificationComponent />
+    </>
   );
 }
