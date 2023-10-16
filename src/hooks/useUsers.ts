@@ -20,7 +20,6 @@ export const useUserStore = create<Store>()((set) => ({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -34,7 +33,6 @@ export const useUserStore = create<Store>()((set) => ({
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -48,7 +46,6 @@ export const useUserStore = create<Store>()((set) => ({
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -63,7 +60,6 @@ export const useUserStore = create<Store>()((set) => ({
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${token}`,
       },
     });
